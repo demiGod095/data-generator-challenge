@@ -100,12 +100,12 @@ def main():
     with open(outFileName, 'w') as outFile:
         metaString = json.dumps(metaObj, default=encoder)
 
-        outFile.write(f"{metaString[:-2]}\n")
+        outFile.write(f'{metaString[:-2]}\n')
         for activity in activities_data[:-1]:
-            outFile.write(f"{json.dumps(activity, default=encoder)},\n")
+            outFile.write(f'{json.dumps(activity, default=encoder)},\n')
 
-        outFile.write(f"{json.dumps(activity, default=encoder)}")
-        outFile.write(f"{metaString[-2:-1]}\n{metaString[-1:]}")
+        outFile.write(f'{json.dumps(activity, default=encoder)}')
+        outFile.write(f'{metaString[-2:-1]}\n{metaString[-1:]}')
 
     print(f'Data written to {outFileName}')
 
