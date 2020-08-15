@@ -1,17 +1,12 @@
 import json
-import pprint
+from argparse import ArgumentParser
+from datetime import datetime, timedelta
 
 from faker import Faker
-
-from argparse import ArgumentParser
-from datetime import datetime, date, time, timedelta
-
 from faker.utils import datetime_safe
 
-startDate = date(2019, 1, 1)
-endDate = date(2020, 8, 14)
-startTime = time(9, 0, 0)
-endTime = time(17, 0, 0)
+# from configuration import START_DATE, END_DATE, START_WORK_HOURS, END_WORK_HOURS, CATEGORY_LIST
+import configuration as conf
 
 
 def genTickets(totalCount):
@@ -20,54 +15,51 @@ def genTickets(totalCount):
     returnList = []
 
     for ticket_id in range(startId, startId + totalCount):
-        ticketDateStart = fake.date_between_dates(startDate, endDate)
-        performer_type = "user"
-        performer_id = fake.random_number(digits=6)
+        ticketDateStart = fake.date_between_dates(conf.START_DATE, conf.END_DATE)
+        performer_id = fake.random_number(digits=conf.RAND_ID_DIGITS)
 
         shipping_address = fake.address()
-        shipment_date = ticketDateStart.strftime("%d %b, %Y")
-        category = fake.word(ext_word_list=['Phone', 'PC', 'Tablet', 'Laptop'])
-        contacted_customer = True
-        issue_type = "Incident"
+        shipment_date = ticketDateStart.strftime(conf.SHIPMENT_DATE_FORMAT)
+        category = fake.word(ext_word_list=conf.CATEGORY_LIST)
+
         source = fake.random_digit_not_null()
         priority = fake.random_digit_not_null()
-        group = fake.word(ext_word_list=['exchange', 'refund', 'return'])
-        # agent_id = performer_id
-        requester = fake.random_number(digits=6)
-        product = fake.word(ext_word_list=['storage', 'headphone', 'accessory', 'device'])
+        group = fake.word(ext_word_list=conf.GROUP_LIST)
+        requester = fake.random_number(digits=conf.RAND_ID_DIGITS)
+        product = fake.word(ext_word_list=conf.PRODUCT_LIST)
 
         thisDate = ticketDateStart
 
-        for status in status_list:
+        for status in conf.STATUS_LIST:
             activity = {
-                "shipping_address": shipping_address,
-                "shipment_date": shipment_date,
-                "category": category,
-                "contacted_customer": contacted_customer,
-                "issue_type": issue_type,
-                "source": source,
-                "status": status,
-                "priority": priority,
-                "group": group,
-                "agent_id": performer_id,
-                "requester": requester,
-                "product": product
+                'shipping_address': shipping_address,
+                'shipment_date': shipment_date,
+                'category': category,
+                'contacted_customer': conf.CONTACTED_CUSTOMER_BOOL,
+                'issue_type': conf.ISSUE_TYPE_STR,
+                'source': source,
+                'status': status,
+                'priority': priority,
+                'group': group,
+                'agent_id': performer_id,
+                'requester': requester,
+                'product': product
             }
 
-            thisDate = (thisDate + fake.time_delta(timedelta(days=5))) + timedelta(days=1)
+            thisDate += timedelta(days=conf.MIN_TIMEDELTA_DAYS)
+            thisDate += fake.time_delta(timedelta(days=conf.RAND_TIMEDELTA_DAYS))
 
             performed_at = fake.date_time_between_dates(
-                datetime_start=datetime.combine(thisDate, startTime),
-                datetime_end=datetime.combine(thisDate, endTime)
+                datetime_start=datetime.combine(thisDate, conf.START_WORK_HOURS),
+                datetime_end=datetime.combine(thisDate, conf.END_WORK_HOURS)
             ).astimezone()
 
             ticket = {
-                # "performed_at": performed_at.strftime("%d-%m-%Y %X %z"),
-                "performed_at": performed_at,
-                "ticket_id": ticket_id,
-                "performer_type": performer_type,
-                "performer_id": performer_id,
-                "activity": activity
+                'performed_at': performed_at,
+                'ticket_id': ticket_id,
+                'performer_type': conf.PERFORMER_TYPE_STR,
+                'performer_id': performer_id,
+                'activity': activity
             }
 
             returnList.append(ticket)
@@ -79,13 +71,13 @@ def genTickets(totalCount):
 
 def encoder(obj):
     if type(obj) is datetime_safe.datetime:
-        return obj.strftime("%d-%m-%Y %X %z")
+        return obj.strftime(conf.PERFORMED_DATE_FORMAT)
 
 
 def main():
     argParser = ArgumentParser()
-    argParser.add_argument('-n', type=int, default=100)
-    argParser.add_argument('-o', type=str, default="activities.json")
+    argParser.add_argument('-n', type=int, default=conf.DEFAULT_COUNT)
+    argParser.add_argument('-o', type=str, default=conf.DEFAULT_ACTIVITIES_FILE)
 
     parsed = argParser.parse_args()
     totalCount = parsed.n
@@ -94,46 +86,19 @@ def main():
     activities_data = genTickets(totalCount)
 
     outObj = {
-        "metadata":
+        'metadata':
             {
-                "start_at": activities_data[0]['performed_at'],
-                "end_at": activities_data[-1]['performed_at'],
-                "activities_count": totalCount * 6
+                'start_at': activities_data[0]['performed_at'],
+                'end_at': activities_data[-1]['performed_at'],
+                'activities_count': totalCount * len(conf.STATUS_LIST)
             },
-        "activities_data": activities_data
+        'activities_data': activities_data
     }
 
     with open(outFileName, 'w') as outFile:
-        outFile.write(json.dumps(outObj, default=encoder, indent=4))
+        outFile.write(json.dumps(outObj, default=encoder, indent=conf.JSON_INDENT))
 
 
-if __name__ == "__main__":
-    status_list = [
-        "Open",
-        "Waiting for Customer",
-        "Waiting for Third Party",
-        "Pending",
-        "Resolved",
-        "Closed"
-    ]
-
-    fake = Faker('en_AU')
-    # Faker.seed(0)
-    # fake.add_provider(date_time)
-
-    # ticketDateStart = fake.date_between_dates(startDate, endDate)
-    # thisDate = ticketDateStart
-    # print(f"s {thisDate}")
-    #
-    # for e, status in enumerate(status_list):
-    #     thisDate = (thisDate + fake.time_delta(timedelta(days=5))) + timedelta(days=1)
-    #
-    #     dt = fake.date_time_between_dates(
-    #         datetime_start=datetime.combine(thisDate, startTime),
-    #         datetime_end=datetime.combine(thisDate, endTime)
-    #     )
-    #
-    #     print(f"{e} {dt}")
-    #     pass
-
+if __name__ == '__main__':
+    fake = Faker(conf.FAKER_LOCALE)
     main()

@@ -139,5 +139,11 @@ dmypy.json
 .pytype/
 
 # End of https://www.toptal.com/developers/gitignore/api/python
+# pycharm config directory, unnecessary for VCS
 .idea/
+
+# custom scratch directory for
 temp/
+
+# no need for versioning the output files
+activities.json
