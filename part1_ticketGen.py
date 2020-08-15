@@ -77,7 +77,7 @@ def encoder(obj):
 def main():
     argParser = ArgumentParser()
     argParser.add_argument('-n', type=int, default=conf.DEFAULT_COUNT)
-    argParser.add_argument('-o', type=str, default=conf.DEFAULT_ACTIVITIES_FILE)
+    argParser.add_argument('-o', type=str, default=conf.DEFAULT_JSON_FILE)
 
     parsed = argParser.parse_args()
     totalCount = parsed.n
@@ -85,18 +85,29 @@ def main():
 
     activities_data = genTickets(totalCount)
 
-    outObj = {
+    metaObj = {
         'metadata':
             {
                 'start_at': activities_data[0]['performed_at'],
                 'end_at': activities_data[-1]['performed_at'],
                 'activities_count': totalCount * len(conf.STATUS_LIST)
             },
-        'activities_data': activities_data
+        'activities_data': []
     }
 
+    print(f'Ticket Generation done.')
+
     with open(outFileName, 'w') as outFile:
-        outFile.write(json.dumps(outObj, default=encoder, indent=conf.JSON_INDENT))
+        metaString = json.dumps(metaObj, default=encoder)
+
+        outFile.write(f"{metaString[:-2]}\n")
+        for activity in activities_data[:-1]:
+            outFile.write(f"{json.dumps(activity, default=encoder)},\n")
+
+        outFile.write(f"{json.dumps(activity, default=encoder)}")
+        outFile.write(f"{metaString[-2:-1]}\n{metaString[-1:]}")
+
+    print(f'Data written to {outFileName}')
 
 
 if __name__ == '__main__':
