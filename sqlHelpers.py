@@ -9,6 +9,7 @@ def create_connection(dbFileName):
         print(e)
     return db
 
+
 create_enum_table = (
     'CREATE TABLE enum_{name}( '
     'id INTEGER NOT NULL, '
