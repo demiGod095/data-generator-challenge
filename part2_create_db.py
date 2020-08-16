@@ -4,7 +4,7 @@ from argparse import ArgumentParser
 
 # from configuration import START_DATE, END_DATE, START_WORK_HOURS, END_WORK_HOURS, CATEGORY_LIST
 import configuration as conf
-import sqlStrings as SQL
+import sqlHelpers as SQL
 
 
 def create_enum_table_with_values(db, name, valList):
@@ -40,15 +40,6 @@ def create_relational_table(db, props):
         print(e)
 
 
-def create_connection(dbFileName):
-    db = None
-    try:
-        db = sqlite3.connect(dbFileName)
-    except sqlite3.Error as e:
-        print(e)
-    return db
-
-
 def delete_db_if_exists(dbFileName):
     try:
         os.remove(dbFileName)
@@ -66,7 +57,7 @@ def main():
 
     delete_db_if_exists(outFileName)
 
-    db = create_connection(outFileName)
+    db = SQL.create_connection(outFileName)
 
     if db is None:
         print(f'Problem creating DB.')

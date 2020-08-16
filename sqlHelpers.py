@@ -1,3 +1,13 @@
+import sqlite3
+
+
+def create_connection(dbFileName):
+    db = None
+    try:
+        db = sqlite3.connect(dbFileName)
+    except sqlite3.Error as e:
+        print(e)
+    return db
 
 create_enum_table = (
     'CREATE TABLE enum_{name}( '
