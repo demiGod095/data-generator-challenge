@@ -17,31 +17,29 @@ create_enum_table = (
     'PRIMARY KEY (id));'
 )
 
-insert_enum_table = 'INSERT INTO enum_{name}(id, {name}_type) VALUES( ?, ? );'
+insert_enum_table = 'INSERT INTO enum_{name}(id, {name}_type) VALUES(?, ?);'
 
-create_rel_table = 'CREATE TABLE {table_name}( {table_props} );'
+create_rel_table = 'CREATE TABLE {table_name}({table_props} );'
 
-insert_rel_table = 'INSERT INTO {table_name}( {table_props} ) VALUES( {param_styles} );'
+insert_rel_table = 'INSERT INTO {table_name}({insert_props}) VALUES({param_styles});'
 
 user_table_props = {
     'name': 'user',
     'props': (
         'id INTEGER NOT NULL',
-        'first_name TEXT',
-        'last_name TEXT',
+        'name TEXT',
         'email TEXT',
-        'PRIMARY KEY (id)'
-    )}
+        'PRIMARY KEY (id)'),
+    'insert': ('id', 'name', 'email')}
 
 agent_table_props = {
     'name': 'agent',
     'props': (
         'id INTEGER NOT NULL',
-        'first_name TEXT',
-        'last_name TEXT',
-        'department TEXT',
-        'PRIMARY KEY (id)'
-    )}
+        'name TEXT',
+        'TFN TEXT',
+        'PRIMARY KEY (id)'),
+    'insert': ('id', 'name', 'TFN')}
 
 ticket_table_props = {
     'name': 'ticket',
@@ -49,8 +47,8 @@ ticket_table_props = {
         'id INTEGER NOT NULL',
         'performer_type TEXT NOT NULL',
         'performer_id INTEGER NOT NULL',
-        'shipment_address TEXT NOT NULL',
-        'shipment_date INTEGER NOT NULL',
+        'shipping_address TEXT NOT NULL',
+        'shipment_date TEXT NOT NULL',
         'category_enum INTEGER NOT NULL',
         'issue_enum INTEGER NOT NULL',
         'group_enum INTEGER NOT NULL',
@@ -60,7 +58,17 @@ ticket_table_props = {
         'FOREIGN KEY (category_enum) REFERENCES enum_category(id)',
         'FOREIGN KEY (issue_enum) REFERENCES enum_issue(id)',
         'FOREIGN KEY (group_enum) REFERENCES enum_group(id)',
-        'FOREIGN KEY (product_enum) REFERENCES enum_product(id)',
+        'FOREIGN KEY (product_enum) REFERENCES enum_product(id)',),
+    'insert': (
+        'id',
+        'performer_type',
+        'performer_id',
+        'shipping_address',
+        'shipment_date',
+        'category_enum',
+        'issue_enum',
+        'group_enum',
+        'product_enum'
     )}
 
 activity_table_props = {
@@ -68,6 +76,7 @@ activity_table_props = {
     'props': (
         'id INTEGER NOT NULL',
         'ticket_id INTEGER NOT NULL',
+        'performed_at INTEGER NOT NULL',
         'contacted_customer BOOLEAN NOT NULL',
         'source INTEGER NOT NULL',
         'status_enum INTEGER NOT NULL',
@@ -78,5 +87,15 @@ activity_table_props = {
         'FOREIGN KEY (ticket_id) REFERENCES ticket(id)',
         'FOREIGN KEY (status_enum) REFERENCES enum_status(id)',
         'FOREIGN KEY (agent_id) REFERENCES agent(id)',
-        'FOREIGN KEY (requester) REFERENCES user(id)',
+        'FOREIGN KEY (requester) REFERENCES user(id)'),
+    'insert': (
+        'id',
+        'ticket_id',
+        'performed_at',
+        'contacted_customer',
+        'source',
+        'status_enum',
+        'priority',
+        'agent_id',
+        'requester'
     )}
