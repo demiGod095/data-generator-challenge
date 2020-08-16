@@ -7,9 +7,8 @@ import configuration as conf
 import sqlStrings as SQL
 
 
-def create_enum_table(db, name, valList):
+def create_enum_table_with_values(db, name, valList):
     createSql = SQL.create_enum_table.format(name=name)
-
     insertSql = SQL.insert_enum_table.format(name=name)
 
     # print(f'cSql: {createSql}')
@@ -27,11 +26,12 @@ def create_enum_table(db, name, valList):
 
 
 def create_relational_table(db, props):
-
     createSql = SQL.create_rel_table.format(
         table_name=props['name'],
         table_props=', '.join(props['props'])
     )
+
+    # print(f'cSql: {createSql}')
 
     try:
         crs = db.cursor()
@@ -72,11 +72,11 @@ def main():
         print(f'Problem creating DB.')
         return
 
-    create_enum_table(db, "status", conf.STATUS_LIST)
-    create_enum_table(db, "category", conf.CATEGORY_LIST)
-    create_enum_table(db, "group", conf.GROUP_LIST)
-    create_enum_table(db, "product", conf.PRODUCT_LIST)
-    create_enum_table(db, "issue", conf.ISSUE_LIST)
+    create_enum_table_with_values(db, "status", conf.STATUS_LIST)
+    create_enum_table_with_values(db, "category", conf.CATEGORY_LIST)
+    create_enum_table_with_values(db, "group", conf.GROUP_LIST)
+    create_enum_table_with_values(db, "product", conf.PRODUCT_LIST)
+    create_enum_table_with_values(db, "issue", conf.ISSUE_LIST)
 
     create_relational_table(db, SQL.user_table_props)
     create_relational_table(db, SQL.agent_table_props)
