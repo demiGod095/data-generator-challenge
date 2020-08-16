@@ -21,11 +21,12 @@ def genTickets(totalCount):
         shipping_address = fake.address()
         shipment_date = ticketDateStart.strftime(conf.SHIPMENT_DATE_FORMAT)
         category = fake.word(ext_word_list=conf.CATEGORY_LIST)
+        issue_type = fake.word(ext_word_list=conf.ISSUE_LIST)
 
         source = fake.random_digit_not_null()
         priority = fake.random_digit_not_null()
         group = fake.word(ext_word_list=conf.GROUP_LIST)
-        requester = fake.random_number(digits=conf.RAND_ID_DIGITS)
+        agent_id = fake.random_number(digits=conf.RAND_ID_DIGITS)
         product = fake.word(ext_word_list=conf.PRODUCT_LIST)
 
         thisDate = ticketDateStart
@@ -36,13 +37,13 @@ def genTickets(totalCount):
                 'shipment_date': shipment_date,
                 'category': category,
                 'contacted_customer': conf.CONTACTED_CUSTOMER_BOOL,
-                'issue_type': conf.ISSUE_TYPE_STR,
+                'issue_type': issue_type,
                 'source': source,
                 'status': status,
                 'priority': priority,
                 'group': group,
-                'agent_id': performer_id,
-                'requester': requester,
+                'agent_id': agent_id,
+                'requester': performer_id,
                 'product': product
             }
 
@@ -54,7 +55,7 @@ def genTickets(totalCount):
                 datetime_end=datetime.combine(thisDate, conf.END_WORK_HOURS)
             ).astimezone()
 
-            ticket = {
+            instance = {
                 'performed_at': performed_at,
                 'ticket_id': ticket_id,
                 'performer_type': conf.PERFORMER_TYPE_STR,
@@ -62,7 +63,7 @@ def genTickets(totalCount):
                 'activity': activity
             }
 
-            returnList.append(ticket)
+            returnList.append(instance)
 
     returnList = sorted(returnList, key=lambda e: e['performed_at'])
 

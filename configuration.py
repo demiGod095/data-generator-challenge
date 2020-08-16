@@ -13,9 +13,9 @@ STATUS_LIST = ['Open', 'Waiting for Customer', 'Waiting for Third Party', 'Pendi
 CATEGORY_LIST = ['Phone', 'PC', 'Tablet', 'Laptop']
 GROUP_LIST = ['exchange', 'refund', 'return', 'RMA', 'repair']
 PRODUCT_LIST = ['storage', 'headphone', 'accessory', 'device']
+ISSUE_LIST = ['Incident', 'Warranty']
 
 PERFORMER_TYPE_STR = 'user'
-ISSUE_TYPE_STR = 'Incident'
 CONTACTED_CUSTOMER_BOOL = True
 
 RAND_TIMEDELTA_DAYS = 7

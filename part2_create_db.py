@@ -4,18 +4,16 @@ from argparse import ArgumentParser
 
 # from configuration import START_DATE, END_DATE, START_WORK_HOURS, END_WORK_HOURS, CATEGORY_LIST
 import configuration as conf
+import sqlStrings as SQL
 
 
 def create_enum_table(db, name, valList):
-    createSql = f'CREATE TABLE enum_{name}(' \
-                f'id INTEGER NOT NULL,' \
-                f'{name}_type TEXT NOT NULL, ' \
-                f'PRIMARY KEY (id));'
+    createSql = SQL.create_enum_table.format(name=name)
 
-    insertSql = f'INSERT INTO enum_{name} VALUES(?,?);'
+    insertSql = SQL.insert_enum_table.format(name=name)
 
-    # print(f'createSql: {createSql}')
-    # print(f'isql: {insertSql}')
+    # print(f'cSql: {createSql}')
+    # print(f'iSql: {insertSql}')
 
     try:
         crs = db.cursor()
@@ -28,7 +26,13 @@ def create_enum_table(db, name, valList):
         print(e)
 
 
-def create_relational_table(db, createSql):
+def create_relational_table(db, props):
+
+    createSql = SQL.create_rel_table.format(
+        table_name=props['name'],
+        table_props=', '.join(props['props'])
+    )
+
     try:
         crs = db.cursor()
         crs.execute(createSql)
@@ -72,6 +76,12 @@ def main():
     create_enum_table(db, "category", conf.CATEGORY_LIST)
     create_enum_table(db, "group", conf.GROUP_LIST)
     create_enum_table(db, "product", conf.PRODUCT_LIST)
+    create_enum_table(db, "issue", conf.ISSUE_LIST)
+
+    create_relational_table(db, SQL.user_table_props)
+    create_relational_table(db, SQL.agent_table_props)
+    create_relational_table(db, SQL.ticket_table_props)
+    create_relational_table(db, SQL.activity_table_props)
 
     print(f'sqlite database generated - {outFileName}')
 
