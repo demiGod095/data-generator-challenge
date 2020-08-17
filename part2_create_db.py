@@ -2,7 +2,6 @@ import os
 import sqlite3
 from argparse import ArgumentParser
 
-# from configuration import START_DATE, END_DATE, START_WORK_HOURS, END_WORK_HOURS, CATEGORY_LIST
 import configuration as conf
 import sqlHelpers as SQL
 
@@ -10,9 +9,6 @@ import sqlHelpers as SQL
 def create_enum_table_with_values(db, name, valList):
     createSql = SQL.create_enum_table.format(name=name)
     insertSql = SQL.insert_enum_table.format(name=name)
-
-    # print(f'cSql: {createSql}')
-    # print(f'iSql: {insertSql}')
 
     try:
         crs = db.cursor()
@@ -30,8 +26,6 @@ def create_relational_table(db, props):
         table_name=props['name'],
         table_props=', '.join(props['props'])
     )
-
-    # print(f'cSql: {createSql}')
 
     try:
         crs = db.cursor()

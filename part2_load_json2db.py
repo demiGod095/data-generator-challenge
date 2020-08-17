@@ -5,7 +5,6 @@ from datetime import datetime
 
 from faker import Faker
 
-# from configuration import START_DATE, END_DATE, START_WORK_HOURS, END_WORK_HOURS, CATEGORY_LIST
 import configuration as conf
 import sqlHelpers as SQL
 
@@ -94,8 +93,6 @@ def insertActivity(db, activity_id, instance):
 
     dt = datetime.strptime(date_string, conf.PERFORMED_DATE_FORMAT)
 
-    # print(dt, dt.timestamp())
-
     insertTuple = (
         activity_id,
         instance['ticket_id'],
@@ -108,8 +105,6 @@ def insertActivity(db, activity_id, instance):
         activity['requester']
     )
 
-    # print(insertSql)
-    # print(insertTuple)
     db.execute(insertSql, insertTuple)
     db.commit()
 
@@ -142,8 +137,6 @@ def convert(inFileName, db):
                 ticketIdSet.add(instance['ticket_id'])
 
             insertActivity(db, ctr, instance)
-
-        # print(line)
 
 
 def main():

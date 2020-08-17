@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 from faker import Faker
 from faker.utils import datetime_safe
 
-# from configuration import START_DATE, END_DATE, START_WORK_HOURS, END_WORK_HOURS, CATEGORY_LIST
 import configuration as conf
 
 
