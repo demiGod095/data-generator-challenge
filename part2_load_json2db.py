@@ -94,7 +94,7 @@ def insertActivity(db, activity_id, instance):
 
     dt = datetime.strptime(date_string, conf.PERFORMED_DATE_FORMAT)
 
-    print(dt, dt.timestamp())
+    # print(dt, dt.timestamp())
 
     insertTuple = (
         activity_id,
