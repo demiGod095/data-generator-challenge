@@ -27,8 +27,8 @@ user_table_props = {
     'name': 'user',
     'props': (
         'id INTEGER NOT NULL',
-        'name TEXT',
-        'email TEXT',
+        'name TEXT NOT NULL',
+        'email TEXT NOT NULL',
         'PRIMARY KEY (id)'),
     'insert': ('id', 'name', 'email')}
 
@@ -36,8 +36,8 @@ agent_table_props = {
     'name': 'agent',
     'props': (
         'id INTEGER NOT NULL',
-        'name TEXT',
-        'TFN TEXT',
+        'name TEXT NOT NULL',
+        'TFN TEXT NOT NULL',
         'PRIMARY KEY (id)'),
     'insert': ('id', 'name', 'TFN')}
 

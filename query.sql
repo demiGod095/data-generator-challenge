@@ -1,23 +1,19 @@
+SELECT a1.ticket_id,
+       a2.performed_at - a1.performed_at AS t1,
+       a3.performed_at - a2.performed_at AS t2,
+       a4.performed_at - a3.performed_at AS t3,
+       a5.performed_at - a4.performed_at AS t4,
+       a6.performed_at - a5.performed_at AS t5
+FROM activity a1
+    inner join activity a2 on a2.ticket_id = a1.ticket_id
+    inner join activity a3 on a3.ticket_id = a1.ticket_id
+    inner join activity a4 on a4.ticket_id = a1.ticket_id
+    inner join activity a5 on a5.ticket_id = a1.ticket_id
+    inner join activity a6 on a6.ticket_id = a1.ticket_id
 
-.headers on
-.mode markdown
-
-SELECT
-	-- open.ticket_id,
-	-- datetime(open.performed_at, 'unixepoch', 'localtime') AS t1,
-	-- datetime(wait.performed_at, 'unixepoch', 'localtime') as t2,
-	open.ticket_id, open.id, open.status_enum as s1, 
-	datetime(open.performed_at, 'unixepoch', 'localtime') AS t1,
-	wait.id, wait.status_enum as s2, 
-	datetime(wait.performed_at, 'unixepoch', 'localtime') AS t2,
-	(wait.performed_at - open.performed_at)/60 AS time_to_
-FROM activity open, activity wait
-
-where open.ticket_id == wait.ticket_id
-AND	open.status_enum == 0
-AND wait.status_enum == 1
-
-
-GROUP BY open.ticket_id;
-
-.exit
+WHERE a1.status_enum = (SELECT id from enum_status WHERE status_type = 'Open') AND
+      a2.status_enum = (SELECT id from enum_status WHERE status_type = 'Waiting for Customer') AND
+      a3.status_enum = (SELECT id from enum_status WHERE status_type = 'Waiting for Third Party') AND
+      a4.status_enum = (SELECT id from enum_status WHERE status_type = 'Pending') AND
+      a5.status_enum = (SELECT id from enum_status WHERE status_type = 'Resolved') AND
+      a6.status_enum = (SELECT id from enum_status WHERE status_type = 'Closed') AND
