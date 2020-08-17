@@ -9,6 +9,14 @@ from faker.utils import datetime_safe
 import configuration as conf
 
 
+def genBoolList():
+    numFalse = fake.random_int(min=1, max=len(conf.STATUS_LIST) - 1)
+
+    boolList = [False if e < numFalse else True for e in range(len(conf.STATUS_LIST))]
+
+    return boolList
+
+
 def genTickets(totalCount):
     startId = fake.random_int()
 
@@ -29,14 +37,16 @@ def genTickets(totalCount):
         agent_id = fake.random_number(digits=conf.RAND_ID_DIGITS)
         product = fake.word(ext_word_list=conf.PRODUCT_LIST)
 
+        boolList = genBoolList()
+
         thisDate = ticketDateStart
 
-        for status in conf.STATUS_LIST:
+        for status, contacted in zip(conf.STATUS_LIST, boolList):
             activity = {
                 'shipping_address': shipping_address,
                 'shipment_date': shipment_date,
                 'category': category,
-                'contacted_customer': conf.CONTACTED_CUSTOMER_BOOL,
+                'contacted_customer': contacted,
                 'issue_type': issue_type,
                 'source': source,
                 'status': status,

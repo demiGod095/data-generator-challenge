@@ -1,9 +1,9 @@
 import json
+import sqlite3
 from argparse import ArgumentParser
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from faker import Faker
-from faker.utils import datetime_safe
 
 # from configuration import START_DATE, END_DATE, START_WORK_HOURS, END_WORK_HOURS, CATEGORY_LIST
 import configuration as conf
@@ -22,7 +22,7 @@ def extractCount(firstLine):
     return int(firstLine[pos1:pos2])
 
 
-def generateInsertSql(props):
+def genInsertSql(props):
     sqlStr = SQL.insert_rel_table.format(
         table_name=props['name'],
         insert_props=', '.join(props['insert']),
@@ -32,7 +32,7 @@ def generateInsertSql(props):
     return sqlStr
 
 
-def generateEmailFromName(name):
+def genEmailFromName(name):
     email = name.lower()
     email = email.replace(' ', fake.random_choices(elements=('_', '.', ''), length=1)[0])
     email = f'{email}@{fake.domain_name()}'
@@ -41,10 +41,10 @@ def generateEmailFromName(name):
 
 
 def insertUser(db, user_id):
-    insertSql = generateInsertSql(SQL.user_table_props)
+    insertSql = genInsertSql(SQL.user_table_props)
 
     name = fake.name()
-    email = generateEmailFromName(name)
+    email = genEmailFromName(name)
 
     insertTuple = (user_id, name, email)
 
@@ -53,7 +53,7 @@ def insertUser(db, user_id):
 
 
 def insertAgent(db, agent_id):
-    insertSql = generateInsertSql(SQL.agent_table_props)
+    insertSql = genInsertSql(SQL.agent_table_props)
 
     name = fake.name()
     tfn = fake.bothify(text='###-###-###')
@@ -65,7 +65,7 @@ def insertAgent(db, agent_id):
 
 
 def insertTicket(db, instance):
-    insertSql = generateInsertSql(SQL.ticket_table_props)
+    insertSql = genInsertSql(SQL.ticket_table_props)
 
     activity = instance['activity']
 
@@ -86,7 +86,7 @@ def insertTicket(db, instance):
 
 
 def insertActivity(db, activity_id, instance):
-    insertSql = generateInsertSql(SQL.activity_table_props)
+    insertSql = genInsertSql(SQL.activity_table_props)
 
     activity = instance['activity']
 
@@ -163,7 +163,13 @@ def main():
         print(f'Error establishing connection with DB.')
         return
 
-    convert(inFileName, db)
+    try:
+        convert(inFileName, db)
+        print(f'Database conversion done!')
+
+    except sqlite3.Error as e:
+        print(e)
+        print(f'DB error occurred, Did you run create script?')
 
 
 if __name__ == '__main__':

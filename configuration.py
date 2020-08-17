@@ -16,14 +16,13 @@ PRODUCT_LIST = ['storage', 'headphone', 'accessory', 'device']
 ISSUE_LIST = ['Incident', 'Warranty']
 
 PERFORMER_TYPE_STR = 'user'
-CONTACTED_CUSTOMER_BOOL = True
 
 RAND_TIMEDELTA_DAYS = 7
 MIN_TIMEDELTA_DAYS = 1
 
-RAND_ID_DIGITS = 6
+RAND_ID_DIGITS = 4
 
 FAKER_LOCALE = 'en_AU'
-DEFAULT_COUNT = 10
+DEFAULT_COUNT = 100
 DEFAULT_JSON_FILE = 'activities.json'
 DEFAULT_SQLITE_FILE = 'db.sqlite3'
