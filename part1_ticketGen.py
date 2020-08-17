@@ -105,6 +105,8 @@ def main():
         for activity in activities_data[:-1]:
             outFile.write(f'{json.dumps(activity, default=encoder)},\n')
 
+        activity = activities_data[-1]
+
         outFile.write(f'{json.dumps(activity, default=encoder)}')
         outFile.write(f'{metaString[-2:-1]}\n{metaString[-1:]}')
 

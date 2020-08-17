@@ -17,3 +17,4 @@ WHERE aOpen.status_enum = (SELECT id from enum_status WHERE status_type = 'Open'
       aPending.status_enum = (SELECT id from enum_status WHERE status_type = 'Pending') AND
       aResolved.status_enum = (SELECT id from enum_status WHERE status_type = 'Resolved') AND
       aClosed.status_enum = (SELECT id from enum_status WHERE status_type = 'Closed')
+order by aOpen.ticket_id

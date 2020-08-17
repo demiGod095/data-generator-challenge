@@ -16,4 +16,5 @@ WHERE a1.status_enum = (SELECT id from enum_status WHERE status_type = 'Open') A
       a3.status_enum = (SELECT id from enum_status WHERE status_type = 'Waiting for Third Party') AND
       a4.status_enum = (SELECT id from enum_status WHERE status_type = 'Pending') AND
       a5.status_enum = (SELECT id from enum_status WHERE status_type = 'Resolved') AND
-      a6.status_enum = (SELECT id from enum_status WHERE status_type = 'Closed') AND
+      a6.status_enum = (SELECT id from enum_status WHERE status_type = 'Closed')
+ORDER BY a1.ticket_id
