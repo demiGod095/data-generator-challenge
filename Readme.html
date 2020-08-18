@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1 id="aginic-data-generation">Aginic Data Generation</h1>
+<p>The project generates data similar to the format present in <em><a href="example.json">example.json</a></em> file.
+    Which then converts the json to relational model, by first creating the database and its schema, and then loading
+    the records one by one. </p>
+<h2 id="build-instructions">Build Instructions</h2>
+<h4 id="requirements">Requirements</h4>
+<ol>
+    <li>Ensure python3 is installed on the command line by running <code>python3</code> in terminal and making sure that
+        the shell changes to the python interpreter.
+    </li>
+    <li>Exit and install the python dependencies using the following command (this installs Faker library used in the
+        project for getting random data):
+        <pre><code>     python -m pip <span class="hljs-keyword">install</span> -r requirements.txt
+</code></pre>
+    </li>
+    <li>Install SQLite command line tool by using package manager, e.g., for Debian based distributions:
+        <pre><code>     sudo apt-<span class="hljs-keyword">get</span> install sqlite3
+</code></pre>
+        <em>OR</em> you can go <a href="https://www.sqlite.org/download.html">here</a> and download the appropriate
+        binaries directly.
+    </li>
+</ol>
+<h4 id="execution">Execution</h4>
+<p>CD to the project directory and run the script <code>part4_script.sh</code> using bash. The script has preconfigured
+    file name arguments and you can choose to change them if you wish.</p>
+<pre><code>    <span class="hljs-keyword">bash </span>part4_script.sh
+</code></pre>
+<p>All the parameters of the program are defined in the <a href="configuration.py">configuration.py</a> file.
+    For example:-</p>
+<ol>
+    <li>Edit the START_DATE and END_DATE values (lines 8 and 9) to change the scope of the generated ticket&#39;s
+        dates.
+    </li>
+    <li>Similarly, you can change the working hours defined in lines 12 and 13.</li>
+</ol>
+<h2 id="design-decisions">Design Decisions</h2>
+<h4 id="assumptions">Assumptions</h4>
+<ol>
+    <li>Only activities with a status field are relevant to the project. The first activity with just a note field is
+        not important as it does not provide much information about the status, and hence is not generated.
+    </li>
+    <li>Status of any ticket proceed in the following order:-
+        <ol>
+            <li>Open</li>
+            <li>Waiting for Customer</li>
+            <li>Waiting for Third Party</li>
+            <li>Pending</li>
+            <li>Resolved</li>
+            <li>Closed</li>
+        </ol>
+    </li>
+    <li>Output of the query in Part 3 is expected in <strong>hours</strong>, for easy understanding of how much time is
+        used by any given ticket.
+    </li>
+    <li><p>The individual columns of Part 3 are defined as following difference in timestamps: -</p>
+        <ol>
+            <li>Time spent open: for how long the ticket was open
+                <ul>
+                    <li><em>Waiting for Customer</em> - <em>Open</em></li>
+                </ul>
+            </li>
+            <li>Time spent Waiting on Customer: how long did it take for the customer to respond to the ticket
+                <ul>
+                    <li><em>Waiting for Third Party</em> - <em>Waiting for Customer</em></li>
+                </ul>
+            </li>
+            <li>Time spent waiting for response (Pending Status): how long was the ticket in pending state
+                <ul>
+                    <li><em>Resolved</em> - <em>Pending</em></li>
+                </ul>
+            </li>
+            <li>Time till resolution: how long did it take for a ticket to go from open to resolved
+                <ul>
+                    <li><em>Resolved</em> - <em>Open</em></li>
+                </ul>
+            </li>
+            <li><p>Time to first response: When was the customer first contacted after generation of the ticket</p>
+                <ul>
+                    <li><p>Timestamp of first occurrence of _contacted<em>customer = True</em> for a ticket -
+                        <em>Open</em></p>
+                        <p> Note: Initially, It seemed like this last time was equal to the first time, i.e. <em>Waiting
+                            for Customer</em> - <em>Open</em>, but after carefully reading the example, I saw that I can
+                            use the boolean &#39;contacted_customer field&#39; for this purpose. The code was hence
+                            modified to have a random number of &#39;False&#39; values for the earlier activities, and
+                            &#39;True&#39; for the rest.</p>
+                    </li>
+                </ul>
+            </li>
+        </ol>
+    </li>
+</ol>
+<h4 id="python">Python</h4>
+<ol>
+    <li>Python is the language of choice for writing data generation and handling scripts.</li>
+    <li>It was a requirement specified for Part 1 of this challenge, and hence was the logical successor for solving the
+        rest.
+    </li>
+    <li>All the necessary constants were defined in separate files for easy access throughout the project: <em><a
+            href="configuration.py">confg</a></em> and <em><a href="sqlHelpers.py">SQL</a></em>
+        <ul>
+            <li>Lists like Group, Category, etc. definitions can be changed according to need, and all the scripts will
+                just work without having to, accommodate for the changes. This applies to the database part as well.
+            </li>
+            <li>The SQL string definitions were stored separate from the code and are hence easier to view and change as
+                needed.
+            </li>
+            <li>It provides modularity of code and keeps the main script clean.</li>
+        </ul>
+    </li>
+    <li>The json file generated has metadata on the first line, and the activities on their separate lines.
+        <ul>
+            <li>This is done to be able to parallelize the code if it were to work with a much larger dataset. The <em>json.loads</em>
+                function cannot handle a large file as it parses all of it into memory.
+            </li>
+        </ul>
+    </li>
+</ol>
+<h4 id="sqlite">SQLite</h4>
+<ol>
+    <li>The database engine is flexible in terms of use and has loose type definitions.</li>
+    <li>It does not support Date and Time data types, hence the datetime fields are of type Integer so that it can be
+        stored as Unix Epoch Time stamps.
+        <ul>
+            <li>This conversion is done in python while inserting into the DB for the &quot;performed_at&quot; field.
+            </li>
+            <li>This conversion is skipped for the &quot;shipment_date&quot; attribute, and is stored as the original
+                string instead, as it is not needed for the future parts.
+            </li>
+        </ul>
+    </li>
+    <li>The schema for tickets was chosen to have the fields that may remain constant over the entire ticket (This may
+        not necessarily be true for all fields and the tables can be modified according to need).
+    </li>
+    <li>The schema for activities has fields that can change during the ticket&#39;s journey, e.g., the &quot;priority&quot;
+        could change over time.
+    </li>
+    <li>Users and Agents (employees) are created with random details when inserting tickets to the database, their
+        tables are tokens, and can be changed according to actual needs.
+    </li>
+    <li>The Part 3 <a href="part3_query.sql">script</a> self joins the activity table for all getting all the necessary
+        values in a single row.
+        <ul>
+            <li>The first 4 joins are done for getting the various statuses of a given ticket together.</li>
+            <li>The last join collects the times when customer has been contacted and the <code>MIN()</code> along with
+                <code>GROUP BY</code> determines the first activity of contact. According to assumption <code>4.v</code>.
+            </li>
+        </ul>
+    </li>
+</ol>
+
+</body>
+</html>
