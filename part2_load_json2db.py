@@ -38,7 +38,7 @@ def genInsertSql(props):
     sqlStr = SQL.insert_rel_table.format(
         table_name=props['name'],
         insert_props=', '.join(props['insert']),
-        param_styles=', '.join(['?' for _ in range(props['insert'])])
+        param_styles=', '.join(['?' for _ in range(len(props['insert']))])
     )
 
     return sqlStr

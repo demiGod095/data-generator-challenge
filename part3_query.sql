@@ -1,5 +1,8 @@
 -- this file has the query required for generating the output in part3
 
+-- added for displaying column names
+.header on
+
 SELECT a1.ticket_id,
        (a2.performed_at - a1.performed_at) / 60      AS time_spent_open,
        (a3.performed_at - a2.performed_at) / 60      AS time_spent_waiting_on_customer,
@@ -7,12 +10,12 @@ SELECT a1.ticket_id,
        (a6.performed_at - a5.performed_at) / 60      AS time_till_resolution,
        (MIN(a7.performed_at) - a1.performed_at) / 60 as time_to_first_response
 FROM activity a1
-         inner join activity a2 on a2.ticket_id = a1.ticket_id
-         inner join activity a3 on a3.ticket_id = a1.ticket_id
-         inner join activity a4 on a4.ticket_id = a1.ticket_id
-         inner join activity a5 on a5.ticket_id = a1.ticket_id
-         inner join activity a6 on a6.ticket_id = a1.ticket_id
-         inner join activity a7 on a7.ticket_id = a1.ticket_id
+         INNER JOIN activity a2 ON a2.ticket_id = a1.ticket_id
+         INNER JOIN activity a3 ON a3.ticket_id = a1.ticket_id
+         INNER JOIN activity a4 ON a4.ticket_id = a1.ticket_id
+         INNER JOIN activity a5 ON a5.ticket_id = a1.ticket_id
+         INNER JOIN activity a6 ON a6.ticket_id = a1.ticket_id
+         INNER JOIN activity a7 ON a7.ticket_id = a1.ticket_id
 
 WHERE a1.status_enum = (SELECT id from enum_status WHERE status_type = 'Open')
   AND a2.status_enum = (SELECT id from enum_status WHERE status_type = 'Waiting for Customer')
