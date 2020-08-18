@@ -1,3 +1,5 @@
+-- this file has the query required for generating the output in part3
+
 SELECT a1.ticket_id,
        (a2.performed_at - a1.performed_at) / 60      AS time_spent_open,
        (a3.performed_at - a2.performed_at) / 60      AS time_spent_waiting_on_customer,
