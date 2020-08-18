@@ -62,7 +62,7 @@ def genTickets(totalCount):
         # loop to generate activities
         for status, contacted in zip(conf.STATUS_LIST, boolList):
             # status is from list,
-            # contacted customer is from random generated bools,
+            # contacted customer is from random generated booleans,
 
             # define activity
             activity = {
@@ -103,7 +103,7 @@ def genTickets(totalCount):
             # add to the list
             returnList.append(instance)
 
-    # sort the list according to occurance
+    # sort the list according to occurrence
     returnList = sorted(returnList, key=lambda e: e['performed_at'])
 
     return returnList

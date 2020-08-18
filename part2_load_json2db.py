@@ -14,7 +14,6 @@ import sqlHelpers as SQL
 
 # function to check how many records are present by inspecting the first line
 def extractCount(firstLine):
-
     # starting of string
     findStr1 = '_count":'
     findStr2 = '}'
@@ -43,14 +42,15 @@ def genInsertSql(props):
 
     return sqlStr
 
+
 # prepare and email address from a name
 def genEmailFromName(name):
     email = name.lower()
-    
+
     # spaces replaced by underscores, dots or just removed.
     email = email.replace(' ', fake.random_choices(elements=('_', '.', ''), length=1)[0])
 
-    # concatinate with a random email domain
+    # concatenate with a random email domain
     email = f'{email}@{fake.domain_name()}'
 
     return email
@@ -66,9 +66,10 @@ def insertUser(db, user_id):
 
     insertTuple = (user_id, name, email)
 
-    # execute insert and comit
+    # execute insert and commit
     db.execute(insertSql, insertTuple)
     db.commit()
+
 
 # create new agent and insert into db with provided id
 def insertAgent(db, agent_id):
@@ -80,7 +81,7 @@ def insertAgent(db, agent_id):
 
     insertTuple = (agent_id, name, tfn)
 
-    # execute insert and comit
+    # execute insert and commit
     db.execute(insertSql, insertTuple)
     db.commit()
 
@@ -104,7 +105,7 @@ def insertTicket(db, instance):
         conf.PRODUCT_LIST.index(activity['product'])
     )
 
-    # execute insert and comit
+    # execute insert and commit
     db.execute(insertSql, insertTuple)
     db.commit()
 
@@ -119,7 +120,6 @@ def insertActivity(db, activity_id, instance):
     # convert string to datetime, later converted to Unix Timestamp
     dt = datetime.strptime(date_string, conf.PERFORMED_DATE_FORMAT)
 
-
     # insert values
     insertTuple = (
         activity_id,
@@ -133,7 +133,7 @@ def insertActivity(db, activity_id, instance):
         activity['requester']
     )
 
-    # execute insert and comit
+    # execute insert and commit
     db.execute(insertSql, insertTuple)
     db.commit()
 
@@ -149,7 +149,6 @@ def convert(inFileName, db):
         userIdSet = set()
         agentIdSet = set()
         ticketIdSet = set()
-
 
         for activity_id in range(count):
             # read one line and convert to string

@@ -13,23 +13,23 @@ from argparse import ArgumentParser
 import configuration as conf
 import sqlHelpers as SQL
 
+
 # create enum type table, all have similar structure
 def create_enum_table_with_values(db, name, valList):
-
-    # get the respective sql strings and 
+    # get the respective sql strings and
     createSql = SQL.create_enum_table.format(name=name)
     insertSql = SQL.insert_enum_table.format(name=name)
 
     try:
         crs = db.cursor()
-        
+
         # create table
         crs.execute(createSql)
 
         # insert all values
         crs.executemany(insertSql, enumerate(valList))
 
-        # comit insert operations
+        # commit insert operations
         db.commit()
     except sqlite3.Error as e:
         print(e)
@@ -47,7 +47,7 @@ def create_relational_table(db, props):
     try:
         crs = db.cursor()
 
-        # run the query, no need to comit as nothing is inserted
+        # run the query, no need to commit as nothing is inserted
         crs.execute(createSql)
     except sqlite3.Error as e:
         print(e)

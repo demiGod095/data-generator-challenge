@@ -1,22 +1,17 @@
 {
-  "metadata":
-  {
+  "metadata": {
     "start_at": "20-04-2017 10:00:00 +0000",
     "end_at": "21-04-2017 09:59:59 +0000",
     "activities_count": 2
   },
-
-  "activities_data":
-  [
+  "activities_data": [
     {
       "performed_at": "21-04-2017 09:33:38 +0000",
       "ticket_id": 600,
       "performer_type": "user",
       "performer_id": 149018,
-      "activity":
-      {
-        "note":
-        {
+      "activity": {
+        "note": {
           "id": 4025864,
           "type": 4
         }
@@ -27,8 +22,7 @@
       "ticket_id": 704,
       "performer_type": "user",
       "performer_id": 149018,
-      "activity":
-      {
+      "activity": {
         "shipping_address": "N/A",
         "shipment_date": "21 Apr, 2017",
         "category": "Phone",
