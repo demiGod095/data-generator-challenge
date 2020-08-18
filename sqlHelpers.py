@@ -1,6 +1,12 @@
+# file to store all the sql configurations and database connection function
+# here the database schema and relational model is defined,
+# this is done in order to separate it from the code.
+
+# sqlite imported for connection
 import sqlite3
 
 
+# function connects to db file and returns object or None if failed
 def create_connection(dbFileName):
     db = None
     try:
@@ -10,6 +16,8 @@ def create_connection(dbFileName):
     return db
 
 
+# enum tables creation template,
+# name is replaced in code with status, category, group etc.
 create_enum_table = (
     'CREATE TABLE enum_{name}( '
     'id INTEGER NOT NULL, '
@@ -17,12 +25,23 @@ create_enum_table = (
     'PRIMARY KEY (id));'
 )
 
+# enum tables insert template,
+# name is replaced by code, and (?, ?) are param_styles of SQLITE
 insert_enum_table = 'INSERT INTO enum_{name}(id, {name}_type) VALUES(?, ?);'
 
+# relational table creation template, populated at runtime according to the table_props
 create_rel_table = 'CREATE TABLE {table_name}({table_props} );'
 
+# relational table insertion template
 insert_rel_table = 'INSERT INTO {table_name}({insert_props}) VALUES({param_styles});'
 
+# table types with their respective properties.
+# in the format - name: a name given to the table
+#   props: the list of properties along with their data types
+#           Also includes Primary key and Foreign Key constraints.
+#   insert: the list of properties that are required while inserting
+
+# table_props start
 user_table_props = {
     'name': 'user',
     'props': (
@@ -99,3 +118,4 @@ activity_table_props = {
         'agent_id',
         'requester'
     )}
+# table_props end
