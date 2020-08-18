@@ -57,6 +57,8 @@ For example:-
     * Lists like Group, Category, etc. definitions can be changed according to need, and all the scripts will just work without having to, accommodate for the changes. This applies to the database part as well.
     * The SQL string definitions were stored separate from the code and are hence easier to view and change as needed.
     * It provides modularity of code and keeps the main script clean.
+1. The json file generated has metadata on the first line, and the activities on their separate lines.
+    * This is done to be able to parallelize the code if it were to work with a much larger dataset. The _json.loads_ function cannot handle a large file as it parses all of it into memory.  
     
 #### SQLite
 1. The database engine is flexible in terms of use and has loose type definitions.
